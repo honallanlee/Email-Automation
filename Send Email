@@ -1,0 +1,37 @@
+function sendCBSemail() {
+
+  var indent = "\n"
+  var ss = SpreadsheetApp.getActiveSpreadsheet()
+  var sheet = SpreadsheetApp.setActiveSheet(ss.getSheets()[0]);
+  var startrow = 756
+  var numRows = 2000
+  var dataRange = sheet.getRange(startrow,3,numRows,5);
+  var data = dataRange.getValues()
+  for (var i=0;i<data.length;++i) {
+ var row = data[i];
+    var indent = "\n"
+    var emailAddress = row[0]; 
+    var name = row[1]
+    var greeting = "Dear".concat(" ","Mr."," ",name,",");
+    var msg = "\n Faith, Service and Community are the cores of the Lasallian Spirit. The Christian Brothers’ Schools Exchange Programme has always been a precious opportunity for Lasallians all over Hong Kong to deepen their insight in the Lasallian education philosophy. This programme aims to allow our students to get a glimpse in the school lives in different Lasallian schools.This year's Christian Brothers’ Schools Exchange Programme will be held from 8 May to 12 May (Mon to Thur), with the Opening Ceremony being held on 6 May (Sat) in St. Joseph’s College."
+    var msglink = "\n We are now recruiting both mentors and outgoing mentees from Form 4."
+    var beforelink ="\nLink to online application form:"
+    var link = "\nhttps://goo.gl/forms/ZkUu5WLcRpvGeH2o2" 
+    var deadline = "\nInterested students please fill in the online Application Form before 23:59 on 10 March 2017 (Friday)."
+    var problems = "\nPlease contact Sean Yap (5E) 91819809 or Allan Lee (5D) 90659477 for further information."
+    var ending = "\n Yours sincerely"+"\nAllan Lee"+"\nTreasurer"+"\nLa Salle College Student Association"
+    var message = greeting.concat(indent,msg,indent,beforelink,indent,link,indent,deadline,indent,problems,indent,ending) //compose email content by concat function adding all strings into one
+    var emailSent = row [2];
+    if (emailSent != "EMAIL_SENT") {
+        var file = DriveApp.getFilesByName('CBS.png');
+       var aliases = GmailApp.getAliases();
+      var subject = "[6 Hours Left]Christian Brothers’ Schools Exchange Programme 2017";
+      if (file.hasNext()) {
+      GmailApp.sendEmail(emailAddress, subject, message,{attachments: [file.next().getAs(MimeType.PNG)],from:aliases[0],name: 'La Salle College Student Association',replyTo:'s12216@lsc.hk'});
+      sheet.getRange(startrow + i, 5).setValue(EMAIL_SENT);
+      SpreadsheetApp.flush();
+      }
+    }
+    
+  }
+}
